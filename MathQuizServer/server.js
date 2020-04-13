@@ -1,34 +1,41 @@
-const express = require('express')
-const app = express()
-const bcrypt = require('bcrypt')
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
 
-app.use(express.json())
+require('dotenv/config');
 
-const users = []
+
+app.use(express.json());
+
+app.get('/', (req, res) => {
+    res.send('Imma savage');
+})
+
 
 app.get('/users', (req, res) => {
-    res.json(users)
+    res.json(req.body);
 })
 
-app.post('/users', async (req, res) => {
-    try {
 
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        const user = { name: req.body.name, password: hashedPassword }
 
-        console.log(hashedPassword)
-        users.push(user)
-        res.status(201).send()
-    } catch (err) {
-        res.status(500).send()
-        console.log(err)
-    }
-})
+//Import Routes
+const registerRoute = require('./routes/register');
+const loginRoute = require('./routes/login');
 
-app.post('/users/login', async (req, res) => {
-    const user = users.find(user => user.name === req.body.name)
+app.use('/register', registerRoute);
+app.use('/login', loginRoute);
 
-})
+
+
+
+//Db connection
+require('dotenv/config');
+mongoose.connect(process.env.mongodbConnection,
+
+    { useNewUrlParser: true, useUnifiedTopology: true },
+    () => console.log('Connected to db'));
+
+
 
 //Server listen
-app.listen(3000)
+app.listen(3000);
