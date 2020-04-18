@@ -8,34 +8,36 @@ require('dotenv/config');
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('Imma savage');
+    res.send(process.env.DUPA)
 })
-
-
-app.get('/users', (req, res) => {
-    res.json(req.body);
-})
-
 
 
 //Import Routes
 const registerRoute = require('./routes/register');
+
 const loginRoute = require('./routes/login');
 
 app.use('/register', registerRoute);
+
 app.use('/login', loginRoute);
-
-
 
 
 //Db connection
 require('dotenv/config');
-mongoose.connect(process.env.mongodbConnection,
+mongoose.connect(process.env.DBCONNECTION,
 
-    { useNewUrlParser: true, useUnifiedTopology: true },
-    () => console.log('Connected to db'));
+    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
 
+
+mongoose.connection.on('connected', () => {
+    console.log('Connected to db')
+})
+
+
+const port = 3000
 
 
 //Server listen
-app.listen(3000);
+app.listen(port, () => {
+    console.log('Listening at port ' + port)
+});

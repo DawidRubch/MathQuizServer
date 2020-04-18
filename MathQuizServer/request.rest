@@ -1,4 +1,5 @@
-GET http://localhost:3000/users
+GET http://localhost:3000/login
+
 
 ###
 
@@ -8,9 +9,9 @@ POST http://localhost:3000/register
 Content-Type: application/json
 
 {
-    "name": "Kyle",
+    "name": "Dawid",
     "password": "password",
-    "email":"kyle@gmail.com"
+    "email":"dawid@gmail.com"
 }
 
 ###
@@ -18,6 +19,6 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    "name": "kyle@gmail.com", "password": "password"
+    "name": "Dawid", "password": "password"
 }
 

@@ -1,30 +1,41 @@
 const express = require('express');
 
-const router = express.Router();
+const bcrypt = require('bcrypt')
+
+const routers = express.Router();
 
 const User = require('../User/usermodel');
 
-router.get('/', (req, res) => {
-    res.send('ImmaSavage')
-})
 
-router.post('/', async (req, res) => {
+routers.post('/', async (req, res) => {
 
-    const user = new User({
-        name: req.body.name,
-        password: req.body.password,
-        email: req.body.email
-    });
+    const nameExists = await User.exists({ name: req.body.name })
 
-    try {
-            const userLoggedin = await user.save();
-            res.json(userLoggedin);
-    } catch (err) {
-        res.status(500).send()
-        console.log(err)
+    const emailExists = await User.exists({ email: req.body.email })
+
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+
+
+    if (!nameExists && !emailExists) {
+
+        const user = User({
+            name: req.body.name, email: req.body.email, password: hashedPassword
+        })
+
+        const savedUser = await user.save()
+
+        res.json(savedUser)
     }
-})
+    else {
+
+        res.send("Email or name already exists.")
+
+    }
+}
+)
+
+
 
 
 //Export
-module.exports = router;
+module.exports = routers;
